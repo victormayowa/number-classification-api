@@ -7,12 +7,19 @@ export class NumberController {
 
   @Get('classify-number')
   async classifyNumber(@Query('number') num: string) {
-    const number = parseInt(num);
+    const parsedNumber = Number(num);
 
-    if (isNaN(number)) {
-      throw new BadRequestException({ number: num, error: true });
+    if (!Number.isInteger(parsedNumber)) {
+      throw new BadRequestException({
+        number: 'float',
+        error: true,
+      });
     }
 
+    if (isNaN(parsedNumber)) {
+      throw new BadRequestException({ number: num, error: true });
+    }
+    const number = Math.abs(parsedNumber);
     // Check properties using service functions
     const isPrime = this.numberService.isPrime(number);
     const isPerfect = this.numberService.isPerfect(number);
