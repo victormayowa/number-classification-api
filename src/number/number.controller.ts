@@ -15,9 +15,8 @@ export class NumberController {
         });
       }
       throw new BadRequestException({
-        statusCode: 400,
-        message: 'Invalid number provided',
-        error: 'Bad Request',
+        number: 'alphabet',
+        error: true,
       });
     }
 
