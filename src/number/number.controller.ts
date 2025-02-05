@@ -7,8 +7,24 @@ export class NumberController {
 
   @Get('classify-number')
   async classifyNumber(@Query('number') num: string) {
-    const parsedNumber = Number(num);
+    if (isNaN(Number(num))) {
+      if (/^[a-zA-Z]+$/.test(num)) {
+        throw new BadRequestException({
+          number: 'alphabet',
+          error: true,
+        });
+      }
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'Invalid number provided',
+        error: 'Bad Request',
+      });
+    }
 
+    // Parse the number and convert negative numbers to positive
+    const parsedNumber = Math.abs(Number(num));
+
+    // ❌ Reject floats
     if (!Number.isInteger(parsedNumber)) {
       throw new BadRequestException({
         number: 'float',
@@ -16,26 +32,22 @@ export class NumberController {
       });
     }
 
-    if (isNaN(parsedNumber)) {
-      throw new BadRequestException({ number: num, error: true });
-    }
-    const number = Math.abs(parsedNumber);
     // Check properties using service functions
-    const isPrime = this.numberService.isPrime(number);
-    const isPerfect = this.numberService.isPerfect(number);
-    const isArmstrong = this.numberService.isArmstrong(number);
-    const isEven = number % 2 === 0;
-    const digitSum = this.numberService.getDigitSum(number);
+    const isPrime = this.numberService.isPrime(parsedNumber);
+    const isPerfect = this.numberService.isPerfect(parsedNumber);
+    const isArmstrong = this.numberService.isArmstrong(parsedNumber);
+    const isEven = parsedNumber % 2 === 0;
+    const digitSum = this.numberService.getDigitSum(parsedNumber);
 
     // Set properties
     const properties = isArmstrong ? ['armstrong'] : [];
     properties.push(isEven ? 'even' : 'odd');
 
     // Fetch fun fact
-    const funFact = await this.numberService.getFunFact(number);
+    const funFact = await this.numberService.getFunFact(parsedNumber);
 
     return {
-      number,
+      number: parsedNumber,
       is_prime: isPrime,
       is_perfect: isPerfect,
       properties,
