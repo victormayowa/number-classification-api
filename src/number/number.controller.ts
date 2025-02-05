@@ -21,7 +21,7 @@ export class NumberController {
     }
 
     // Parse the number and convert negative numbers to positive
-    const parsedNumber = Math.abs(Number(num));
+    const parsedNumber = Number(num);
 
     // ❌ Reject floats
     if (!Number.isInteger(parsedNumber)) {
@@ -36,7 +36,7 @@ export class NumberController {
     const isPerfect = this.numberService.isPerfect(parsedNumber);
     const isArmstrong = this.numberService.isArmstrong(parsedNumber);
     const isEven = parsedNumber % 2 === 0;
-    const digitSum = this.numberService.getDigitSum(parsedNumber);
+    const digitSum = this.numberService.getDigitSum(Math.abs(parsedNumber));
 
     // Set properties
     const properties = isArmstrong ? ['armstrong'] : [];

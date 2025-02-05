@@ -48,8 +48,9 @@ export class NumberService {
     try {
       const response = await axios.get(`http://numbersapi.com/${n}/math`);
       return response.data as string;
-    } catch {
-      return 'Fun fact unavailable';
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      return 'No fun fact available for this number.';
     }
   }
 }
